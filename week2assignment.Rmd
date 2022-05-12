@@ -1,0 +1,58 @@
+---
+title: "Milestone Report"
+author: "Antonio Vitor"
+date: "05/05/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Has the data scientist done basic summaries of the three files? Word counts, line counts and basic data tables?
+
+Has the data scientist made basic plots, such as histograms to illustrate features of the data?
+
+Was the report written in a brief, concise style, in a way that a non-data scientist manager could appreciate?
+
+## Synopsis
+
+. . .
+
+## Load Data
+
+```{r, cache=TRUE}
+if (!dir.exists("final")){
+     
+     if(!file.exists("Coursera-Swiftkey.zip")){
+          download.file("https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip")
+     } else {
+          unzip("Coursera-Swiftkey.zip")
+     }
+}
+
+setwd("./final")
+
+text <- file("en_US/en_US.twitter.txt", open = "r")
+twitter <- readLines(text, skipNul = T)
+close(text)
+
+text <- file("en_US/en_US.blogs.txt", open = "r")
+blogs <- readLines(text, skipNul = T)
+close(text)
+
+text <- file("en_US/en_US.news.txt", open = "r")
+news <- readLines(text, skipNul = T)
+close(text)
+
+rm("text")
+```
+
+## basic Summary
+
+
+
+## Exploratory Analysis
+
+
+
