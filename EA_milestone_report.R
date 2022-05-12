@@ -2,16 +2,14 @@ library(tidyverse)
 library(dplyr)
 library(wordcloud2)
 
-
-
 if (!dir.exists("final")){
      
      if(!file.exists("Coursera-Swiftkey.zip")){
           download.file("https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip",
                         destfile = "Coursera-Swiftkey.zip")
-     } else {
-          unzip("Coursera-Swiftkey.zip")
      }
+     
+     unzip("Coursera-Swiftkey.zip")
 }
 
 setwd("./final")
@@ -30,7 +28,7 @@ close(text)
 
 rm("text")
 
-library(stringr)
+
 # File size:
 file.info("en_US/en_US.twitter.txt")
 
@@ -50,6 +48,8 @@ numLines <- sapply(list(blogs, news, twitter),
                    FUN = length)
 
 # number of words
+library(stringr)
+
 ## Method 1:
 str_split(blogs,
           pattern = " ") %>%
@@ -82,6 +82,19 @@ WPL <- sapply(list(blogs, news, twitter),
 
 numWords <- sapply(X = WPL,
                    FUN = sum)
+
+sumWPL <- sapply(X = WPL,
+                 FUN = summary) %>% t()
+
+# Joining everything on a data frame
+
+mydf <- data.frame(file = c("Blogs", "News", "Twitter"),
+                   size = paste(file_MB, "MB"), 
+                   characters = numChars,
+                   words = numWords,
+                   lines = numLines,
+                   WPL = sumWPL)
+
 
 # Testing with a smaller sentence
 library(tm)
