@@ -1,0 +1,48 @@
+---
+title: "Untitled"
+author: "Antonio Vitor"
+date: "16/05/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+[CLick here](https://www.coursera.org/learn/data-science-project?specialization=jhu-data-science)
+
+`r Sys.Date()`
+
+This is an `full_join()` R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+# (PART) Including Plots {-}
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+# Reference {#reference}
+
+This is the final part.
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce libero dui, pulvinar a ornare posuere, faucibus id justo. Vestibulum vestibulum magna vel ligula faucibus, nec pulvinar metus vehicula. Donec tempus massa malesuada sem commodo, eget consequat turpis ultrices. Proin consequat venenatis viverra. Phasellus dignissim finibus tristique. Nulla facilisi. Praesent sit amet neque magna.
+
+Nullam nec urna molestie enim gravida vehicula non iaculis ipsum. Aliquam sagittis eget risus non scelerisque. Nullam eleifend mi at eros iaculis, quis ultricies tortor ultricies. Fusce ante dolor, pulvinar a auctor nec, consectetur vel tellus. Nulla venenatis vestibulum molestie. Donec orci nunc, euismod id tristique nec, facilisis eu dui. Suspendisse potenti. Quisque sed accumsan sem, a condimentum est. Pellentesque pharetra est ut lacus euismod, eget suscipit sapien sagittis. Praesent luctus quam ac est hendrerit, a eleifend lacus finibus. Curabitur interdum magna eu tellus consequat porta. Curabitur luctus erat magna, eu malesuada tortor pellentesque et.
+
+Mauris a varius mauris. Nulla sollicitudin sed velit et lobortis. Proin aliquet congue ante, mollis semper turpis tempor semper. Cras elementum vulputate odio, cursus faucibus sem eleifend id. Maecenas nulla massa, fermentum at dolor nec, commodo varius urna. Praesent purus urna, varius quis eros ornare, ultricies lobortis ipsum. Pellentesque aliquet nisi diam, consequat tempus turpis ullamcorper non. Praesent scelerisque non turpis imperdiet vulputate. Phasellus vitae volutpat libero. Vestibulum et consequat eros, at convallis lectus. In hac habitasse platea dictumst. Duis aliquam ut turpis a hendrerit. Etiam at efficitur nisl. Sed lacinia maximus volutpat. Nunc ac erat auctor, volutpat nibh sit amet, consectetur tortor.
+
+Curabitur nec lacus nec magna ultrices tincidunt. Aenean cursus, lectus quis aliquam feugiat, ante diam aliquam metus, sit amet malesuada lacus arcu nec ipsum. Phasellus id dignissim quam, in efficitur augue. Pellentesque vitae eros urna. Fusce in diam purus. Quisque mauris sapien, interdum in tortor ac, auctor lobortis nulla. Donec eu arcu pretium, rhoncus eros quis, tempor ipsum. Proin eu maximus est. Maecenas in felis ante. Integer fringilla vestibulum quam, nec eleifend mauris congue et. Cras lacinia interdum maximus. Sed nec efficitur quam. Donec finibus bibendum ligula, vel maximus nulla lobortis ac. Vestibulum a nisl vel eros vehicula euismod. Aliquam vel mauris sit amet purus commodo vestibulum. Etiam lacinia risus quis justo condimentum, quis tincidunt urna vulputate.
+
+In auctor leo id volutpat convallis. Etiam non imperdiet justo. Curabitur quis finibus metus, ut tempor dui. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse aliquam tellus et ultricies hendrerit. Etiam non iaculis quam. Duis mattis dapibus felis vitae bibendum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam vitae felis sed elit mollis condimentum vel nec ligula.

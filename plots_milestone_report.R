@@ -1,6 +1,4 @@
-library(tidyverse)
 library(dplyr)
-library(wordcloud2)
 
 if (!dir.exists("final")){
      
@@ -63,7 +61,7 @@ clean_words <- function(x) {
 }
 
 table_words <- function(x) {
-     require(dplyr); require(stringr)
+     require(dplyr); require(stringr); require(tm)
      
      UW <- str_remove_all(string = x,
                           pattern = '[[:punct:]]') %>%
@@ -84,15 +82,51 @@ twitter_df <- table_words(twitter)
 mytable %>%head()
 hist(head(mytable, 20))
 
+# Joining data frames
+full_join(x = blogs_df[1:150,],
+          y = news_df[1:150,],
+          by = "UW") %>% rowwise() %>% # RowWise applies vectorized formulas for each row
+     mutate(rowsum = sum(Freq.x, Freq.y,
+                      na.rm = T)) %>%
+     select(UW, rowsum) # %>% wordcloud2()
+
+joined_df <- full_join(x = blogs_df[1:150,],
+                       y = news_df[1:150,],
+                       by = "UW") %>%
+     full_join(y = twitter_df[1:150,],
+               by = "UW") %>% rowwise() %>%
+     mutate(rowsum = sum(Freq.x, Freq.y, Freq,
+                         na.rm = T)) %>%
+     select(UW, rowsum) %>% arrange(desc(rowsum)) %>%
+     as.data.frame()
+
+joined_df %>% head(20)
+
+# library(tidyverse)
+library(wordcloud2)
+
+wordcloud2(head(joined_df, 150), size = 3)
+
+
+# Histograms
 library(ggplot2)
+library(scales)
+library(plotly)
 
-ggplot(blogs_df,
-       aes(x = UW, y = Freq)) +
-     geom_bar(color = UW)
+g <- ggplot(head(joined_df, 20),
+            aes(x = UW,
+                y = rowsum,
+                fill = UW)) +
+     geom_histogram(stat = "identity") +
+     theme(axis.text.x = element_text(angle = 90, 
+                                      vjust = 0.5, 
+                                      hjust=1),
+           legend.position = "none",
+           axis.title.x = element_blank()) +
+     ylab("Frequency") +
+     scale_y_continuous(labels = comma)
 
-
-
-
+ggplotly(g)
 
 ### tests
 
@@ -101,9 +135,6 @@ news %>% str_remove_all(pattern = '[[:punct:]]') %>%
 
 news %>% gsub(pattern = '[[:punct:]]', replacement = "") %>%
      system.time()
-
-
-
 
 blogs[1:10] %>% str_remove_all(pattern = '[[:punct:]]') %>% nchar()
 
@@ -115,8 +146,3 @@ blogs[1:10] %>% gsub(pattern = '[[:punct:]]', replacement = "") %>% nchar()
 
 identical(blogs[1:3] %>% str_remove_all(pattern = '[[:punct:]]'),
           blogs[1:3] %>% gsub(pattern = '[[:punct:]]', replacement = ""))
-
-
-
-
-

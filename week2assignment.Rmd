@@ -1,58 +1,276 @@
 ---
 title: "Milestone Report"
-author: "Antonio Vitor"
-date: "05/05/2022"
+author: "Antonio Vitor Villas Boas"
 output: html_document
 ---
+date: `r Sys.Date()`
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+# Synopsis
 
-Has the data scientist done basic summaries of the three files? Word counts, line counts and basic data tables?
+This report is part of the evaluation of [Johns Hopkins University - Data Science Capstone](https://www.coursera.org/learn/data-science-project?specialization=jhu-data-science).
 
-Has the data scientist made basic plots, such as histograms to illustrate features of the data?
+The goal of this project is to display the work with the data and preparation to create the prediction algorithm.
 
-Was the report written in a brief, concise style, in a way that a non-data scientist manager could appreciate?
+# Load Data
 
-## Synopsis
+```{r, cache=TRUE, warning=FALSE, message=FALSE}
 
-. . .
-
-## Load Data
-
-```{r, cache=TRUE}
 if (!dir.exists("final")){
      
      if(!file.exists("Coursera-Swiftkey.zip")){
-          download.file("https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip")
-     } else {
-          unzip("Coursera-Swiftkey.zip")
+          download.file("https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip",
+                        destfile = "Coursera-Swiftkey.zip")
      }
+     
+     unzip("Coursera-Swiftkey.zip")
 }
 
-setwd("./final")
-
-text <- file("en_US/en_US.twitter.txt", open = "r")
-twitter <- readLines(text, skipNul = T)
-close(text)
-
-text <- file("en_US/en_US.blogs.txt", open = "r")
+text <- file("final/en_US/en_US.blogs.txt", open = "r")
 blogs <- readLines(text, skipNul = T)
 close(text)
 
-text <- file("en_US/en_US.news.txt", open = "r")
+text <- file("final/en_US/en_US.news.txt", open = "r")
 news <- readLines(text, skipNul = T)
+close(text)
+
+text <- file("final/en_US/en_US.twitter.txt", open = "r")
+twitter <- readLines(text, skipNul = T)
 close(text)
 
 rm("text")
 ```
 
-## basic Summary
+# Basic Summary
 
+The three data sets are quite large and this report will focus on the Tokenizing steps of Natural Language Processing (NLP).
 
+In this section, the data sets will be analyzed and summarized separately.
 
-## Exploratory Analysis
+Below we can see 
 
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(dplyr)
+library(stringr)
 
+file_MB <- round(file.info(c("final/en_US/en_US.blogs.txt",
+                             "final/en_US/en_US.news.txt",
+                             "final/en_US/en_US.twitter.txt"))$size / 1024^2,
+                 digits = 1)
+
+numChars <- sapply(list(nchar(blogs), 
+                        nchar(news), 
+                        nchar(twitter)),
+                   FUN = sum)
+
+numLines <- sapply(list(blogs, 
+                        news,
+                        twitter),
+                   FUN = length)
+
+WPL <- sapply(list(blogs, news, twitter),
+                   FUN = function(x){
+                        str_count(string = x,
+                                  pattern = "\\w+")
+                   })
+
+numWords <- sapply(X = WPL,
+                   FUN = sum)
+
+sumWPL <- sapply(X = WPL,
+                 FUN = summary) %>% t()
+
+mydf <- data.frame(file = c("Blogs", "News", "Twitter"),
+                   size = paste(file_MB, "MB"), 
+                   characters = numChars,
+                   words = numWords,
+                   lines = numLines,
+                   WPL = sumWPL)
+mydf
+```
+
+The code is available at the Appendix 1 section.
+
+# Exploratory Analysis
+
+For better understanding, the data sets were converted into character vectors and then counted the frequency of appearance of every word.
+
+The three character vectors formed a single vector using the `full_join()` function. In the end, a data frame was created with the words and the their respective sums of frequencies. To top 5 most frequent words were:
+
+```{r, echo=FALSE, cache=TRUE, warning=FALSE, message=FALSE}
+table_words <- function(x) {
+     require(dplyr); require(stringr); require(tm)
+     
+     UW <- str_remove_all(string = x,
+                          pattern = '[[:punct:]]') %>%
+          removeWords(words = stopwords('en')) %>%
+          tolower() %>%
+          str_split(pattern = " ") %>%
+          unlist()
+     
+     UW <- UW[(grepl(pattern = "^[a-z]", UW))&(!grepl(pattern = "[^\x01-\x7F]+", UW))] # "[^\x01-\x7F]+" removes non-english characters 
+     
+     return(as.data.frame(sort(table(UW), decreasing = T)))
+}
+
+blogs_df <- table_words(blogs)
+news_df <- table_words(news)
+twitter_df <- table_words(twitter)
+
+rm(list = c("blogs", "news", "twitter"))
+
+joined_df <- full_join(x = blogs_df[1:150,],
+                       y = news_df[1:150,],
+                       by = "UW") %>%
+     full_join(y = twitter_df[1:150,],
+               by = "UW") %>% rowwise() %>%
+     mutate(rowsum = sum(Freq.x, Freq.y, Freq,
+                         na.rm = T)) %>%
+     select(UW, rowsum) %>% arrange(desc(rowsum)) %>%
+     as.data.frame()
+
+print(head(joined_df, 5))
+```
+
+And here is a histogram of the 20 most frequent words
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(ggplot2)
+library(scales)
+library(plotly)
+
+g <- ggplot(head(joined_df, 20),
+            aes(x = UW,
+                y = rowsum,
+                fill = UW)) +
+     geom_histogram(stat = "identity") +
+     theme(axis.text.x = element_text(angle = 90, 
+                                      vjust = 0.5, 
+                                      hjust=1),
+           legend.position = "none",
+           axis.title.x = element_blank()) +
+     ylab("Frequency") +
+     scale_y_continuous(labels = comma)
+
+ggplotly(g)
+```
+
+For a better visualization, below there is a Wordcloud from `wordcloud2` library, which plots the words with its respective size directly proportional to its frequency
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(wordcloud2)
+
+wordcloud2(head(joined_df, 150), size = 3)
+```
+
+All the codes used to plot these data are available at Appendix 2 section.
+
+# Appendix
+
+## 1. Basic Summary
+```{r, eval=FALSE}
+file_MB <- round(file.info(c("en_US/en_US.blogs.txt",
+                             "en_US/en_US.news.txt",
+                             "en_US/en_US.twitter.txt"))$size / 1024^2,
+                 digits = 1)
+
+# Calculates the number of Characters in each line
+numChars <- sapply(list(nchar(blogs), 
+                        nchar(news), 
+                        nchar(twitter)),
+                   FUN = sum)
+
+# Calculates the total number of lines in each data set
+numLines <- sapply(list(blogs, 
+                        news,
+                        twitter),
+                   FUN = length)
+
+# Calculates the number of Words Per Line (WPL)
+WPL <- sapply(list(blogs, news, twitter),
+                   FUN = function(x){
+                        str_count(string = x,
+                                  pattern = "\\w+")
+                   })
+
+# Calculates the total of words of each data set
+numWords <- sapply(X = WPL,
+                   FUN = sum)
+
+# Summarizes each data set by WPL
+sumWPL <- sapply(X = WPL,
+                 FUN = summary) %>% t()
+
+mydf <- data.frame(file = c("Blogs", "News", "Twitter"),
+                   size = paste(file_MB, "MB"), 
+                   characters = numChars,
+                   words = numWords,
+                   lines = numLines,
+                   WPL = sumWPL)
+print(mydf)
+```
+
+## 2. Exploratory Analysis
+
+```{r, eval=FALSE}
+# This function takes a string vector of words, clear out all stopwords and 
+# returns a data frame of every word and its respective frequency.
+table_words <- function(x) {
+     require(dplyr); require(stringr); require(tm)
+     
+     UW <- str_remove_all(string = x,
+                          pattern = '[[:punct:]]') %>%
+          removeWords(words = stopwords('en')) %>%
+          tolower() %>%
+          str_split(pattern = " ") %>%
+          unlist()
+     
+     UW <- UW[(grepl(pattern = "^[a-z]", UW))&(!grepl(pattern = "[^\x01-\x7F]+", UW))] # "[^\x01-\x7F]+" removes non-english characters 
+     
+     return(as.data.frame(sort(table(UW), decreasing = T)))
+}
+
+blogs_df <- table_words(blogs)
+news_df <- table_words(news)
+twitter_df <- table_words(twitter)
+
+# Data frame with all three data sets words and frequencies
+joined_df <- full_join(x = blogs_df[1:150,],
+                       y = news_df[1:150,],
+                       by = "UW") %>%
+     full_join(y = twitter_df[1:150,],
+               by = "UW") %>% rowwise() %>%
+     mutate(rowsum = sum(Freq.x, Freq.y, Freq,
+                         na.rm = T)) %>%
+     select(UW, rowsum) %>% arrange(desc(rowsum)) %>%
+     as.data.frame()
+
+print(head(joined_df, 5))
+
+library(ggplot2)
+library(scales)
+library(plotly)
+
+g <- ggplot(head(joined_df, 20),
+            aes(x = UW,
+                y = rowsum,
+                fill = UW)) +
+     geom_histogram(stat = "identity") +
+     theme(axis.text.x = element_text(angle = 90, 
+                                      vjust = 0.5, 
+                                      hjust=1),
+           legend.position = "none",
+           axis.title.x = element_blank()) +
+     ylab("Frequency") +
+     scale_y_continuous(labels = comma)
+
+print(ggplotly(g))
+
+library(wordcloud2)
+
+print(wordcloud2(head(joined_df, 150), 
+                 size = 3))
+```
 
