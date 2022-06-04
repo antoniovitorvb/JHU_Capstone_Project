@@ -4,3 +4,13 @@
 ## [By Coursera](https://www.coursera.org/specializations/jhu-data-science?#courses)
 
 This repo is presents my studies and development of the final project solution for Johns Hopkins University certification.
+
+## Milestone Report
+
+The first assignment of this course was to make an Exploratory Analysis of the data set.
+
+The report can be found at the Rpubs repository [here](https://rpubs.com/antoniovitor/jhu-cp-milestone-report)
+
+## Final Project
+
+In development...
