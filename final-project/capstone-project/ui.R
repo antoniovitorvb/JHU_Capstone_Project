@@ -13,21 +13,22 @@ library(shiny)
 shinyUI(fluidPage(
 
     # Application title
-    titlePanel("Old Faithful Geyser Data"),
+    titlePanel("Final Project Submission"),
 
     # Sidebar with a slider input for number of bins
     sidebarLayout(
-        sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
+         sidebarPanel(
+              h3("How It Works:"),
+              "Type any word or sentence then press 'Enter' to see the predicted word."
+              ),
 
         # Show a plot of the generated distribution
-        mainPanel(
-            plotOutput("distPlot")
+          mainPanel(
+               textInput(inputId = "text",
+                         label = "Type here"),
+               
+               textOutput("word")
+               )
         )
     )
-))
+)

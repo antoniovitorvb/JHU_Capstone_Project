@@ -8,19 +8,29 @@
 #
 
 library(shiny)
+library(dplyr)
+library(stringr)
+
+# Loading the data
+if (!dir.exists("final")){
+     
+     if(!file.exists("Coursera-Swiftkey.zip")){
+          download.file("https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip",
+                        destfile = "Coursera-Swiftkey.zip")
+     }
+     
+     unzip("Coursera-Swiftkey.zip")
+}
+
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
-
-    output$distPlot <- renderPlot({
-
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
-
-    })
-
+     
+     predOutput <- reactive({
+          paste(input$text, "Oh Yeah!", sep = " ")
+     })
+     
+     if(!is.null(input$text)){
+          output$word <- predOutput
+     }
 })

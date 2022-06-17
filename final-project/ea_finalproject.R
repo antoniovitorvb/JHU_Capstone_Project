@@ -1,3 +1,5 @@
+setwd("D:/vitor/Documentos/GitHub/JHU_Capstone_Project/final-project")
+
 library(dplyr)
 library(stringr)
 library(ggplot2)
