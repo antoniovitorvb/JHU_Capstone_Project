@@ -26,8 +26,7 @@ shinyUI(fluidPage(
           mainPanel(
                textInput(inputId = "text",
                          label = "Type here"),
-               
-               textOutput("word")
+               actionButton(inputId = "but", label = "Press")
                )
         )
     )

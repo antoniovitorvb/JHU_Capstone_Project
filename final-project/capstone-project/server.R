@@ -22,15 +22,21 @@ if (!dir.exists("final")){
      unzip("Coursera-Swiftkey.zip")
 }
 
+text <- file("final/en_US/en_US.blogs.txt", open = "r")
+blogs <- readLines(text, skipNul = T)
+close(text)
+
+text <- file("final/en_US/en_US.news.txt", open = "r")
+news <- readLines(text, skipNul = T)
+close(text)
+
+text <- file("final/en_US/en_US.twitter.txt", open = "r")
+twitter <- readLines(text, skipNul = T)
+close(text)
+
+rm("text")
+
+data <- c(blogs, news, twitter)
 
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
-     
-     predOutput <- reactive({
-          paste(input$text, "Oh Yeah!", sep = " ")
-     })
-     
-     if(!is.null(input$text)){
-          output$word <- predOutput
-     }
-})
+shinyServer(function(input, output) {})

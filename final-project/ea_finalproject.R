@@ -3,7 +3,9 @@ setwd("D:/vitor/Documentos/GitHub/JHU_Capstone_Project/final-project")
 library(dplyr)
 library(stringr)
 library(ggplot2)
-library(ngram)
+library(tm)
+library(RWeka)
+library(magrittr)
 
 
 if (!dir.exists("final")){
@@ -53,3 +55,18 @@ table_words <- function(x) {
 # twitter_df <- table_words(twitter)
 
 df_data <- table_words(data)
+
+data_corpus <- VectorSource(data) %>%
+     Corpus() %>% # Converts from character to Corpus
+     tm_map(tolower) %>%
+     tm_map(removePunctuation) %>%
+     tm_map(FUN = removeWords,
+            stopwords(kind = "en"))
+
+data_tdm <- data_corpus %>%
+     TermDocumentMatrix(control = list(removePunctuation = TRUE,
+                                       removeNumbers = TRUE,
+                                       wordLengths = c(1, Inf)))
+
+
+
