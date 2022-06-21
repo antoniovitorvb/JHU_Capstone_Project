@@ -30,6 +30,12 @@ preprocess_corpus <- function(corpus){
 
 corpus_cleaned <- preprocess_corpus(data)
 
+# save(corpus_cleaned,
+#      file = "corpus.RData")
+
+##### CREATING THE N-GRAMS #####
+load("corpus.RData")
+
 create_ngram <- function(corpus, n = 2){
      if (n == 1) TermDocumentMatrix(corpus)
      else tdm2(corpus,
@@ -41,10 +47,15 @@ tdm_unigram <- create_ngram(corpus_cleaned, 1)
 tdm_bigram <- create_ngram(corpus_cleaned, 2)
 tdm_trigram <- create_ngram(corpus_cleaned, 3)
 
+# save(tdm_unigram,
+#      file = "unigram.RData")
+
 save(tdm_unigram, tdm_bigram, tdm_trigram,
      file = "./capstone-project/ngrams.RData")
 
 #####   BUILDING THE MODEL   #####
+load("./capstone-project/ngrams.RData")
+
 
 katz_backoff_model <- function(phrase) {
      
