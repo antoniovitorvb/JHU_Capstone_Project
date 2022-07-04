@@ -1,0 +1,14 @@
+name: cp-word-prediction
+title: cp-word-prediction
+username:
+account: antoniovitor
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6584940
+bundleId: 6064730
+url: https://antoniovitor.shinyapps.io/cp-word-prediction/
+when: 1656814898.9949
+lastSyncTime: 1656814898.99492
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|unigram.RData

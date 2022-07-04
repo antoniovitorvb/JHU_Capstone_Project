@@ -1,19 +1,67 @@
-#
-# This is the server logic of a Shiny web application. You can run the
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
+---
+title: "Final Project Slide Deck"
+author: "Antonio Vitor Villas Boas"
+date: "`r Sys.Date()`"
+output: ioslides_presentation
+runtime: shiny
+---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Intro
+
+here should be some text
+
+
+## Text Processing
+
+The libraries used to read, clean and process the data were `tm` and `ngramrr`.
+
+Each file were transformed from text to VCorpus and then TermDocumentMatrix. But due to the large size of the file (around 550Mb) it was very computationally expensive to process the entire text file.
+
+To build the Ngrams, I took 1000 samples from the file
+
+## Shiny Code
+
+```{r echo=TRUE}
+ui <- fluidPage(
+     titlePanel("Final Project Submission"),
+     h2("Capstone Project"),
+     h3("Johns Hopkins University - Data Science Specialization"),
+     sidebarLayout(
+          sidebarPanel(
+               h3("How It Works:"),
+               "Type any word or sentence and the output will show the most 
+              possible suggestion to complete it."
+          ),
+          mainPanel(
+               textInput(inputId = "text",
+                         label = "Type here"),
+               textOutput(outputId = "predict")
+          )
+     )
+)
+
+server <- function(input, output) {
+     output$predict <- renderText({
+          if (input$text == "") "Waiting for input..."
+          else katz_backoff_model(input$text)
+     })
+}
+```
+
+## Shiny App
+
+```{r echo=FALSE, message=FALSE}
 library(shiny)
 library(dplyr)
 library(tm)
 library(ngramrr)
 
 # Loading the ngrams processed in ea_finalproject_4.R
-load("ngrams.RData")
+load("./joined-project/ngrams.RData")
 
 preprocess_corpus <- function(corpus){
      return(corpus %>%
@@ -156,13 +204,44 @@ katz_backoff_model <- function(phrase) {
      }
 }
 
+# Define UI for application that draws a histogram
+ui <- fluidPage(
 
+     # Application title
+     titlePanel("Final Project Submission"),
+     
+     h2("Capstone Project"),
+     
+     h3("Johns Hopkins University - Data Science Specialization"),
+     
+     # Sidebar with a slider input for number of bins
+     sidebarLayout(
+          sidebarPanel(
+               h3("How It Works:"),
+               "Type any word or sentence and the output will show the most 
+              possible suggestion to complete it."
+          ),
+          
+          # Show a plot of the generated distribution
+          mainPanel(
+               textInput(inputId = "text",
+                         label = "Type here"),
+               
+               textOutput(outputId = "predict")
+          )
+     )
+)
 
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
-     
-     output$predict <- renderText(
+server <- function(input, output) {
+
+     output$predict <- renderText({
           if (input$text == "") "Waiting for input..."
           else katz_backoff_model(input$text)
-     )
-})
+     })
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
+```
+

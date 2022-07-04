@@ -1,6 +1,6 @@
 #
-# This is the server logic of a Shiny web application. You can run the
-# application by clicking 'Run App' above.
+# This is a Shiny web application. You can run the application by clicking
+# the 'Run App' button above.
 #
 # Find out more about building applications with Shiny here:
 #
@@ -156,13 +156,42 @@ katz_backoff_model <- function(phrase) {
      }
 }
 
+# Define UI for application that draws a histogram
+ui <- fluidPage(
 
+     # Application title
+     titlePanel("Final Project Submission"),
+     
+     h2("Capstone Project"),
+     
+     h3("Johns Hopkins University - Data Science Specialization"),
+     
+     # Sidebar with a slider input for number of bins
+     sidebarLayout(
+          sidebarPanel(
+               h3("How It Works:"),
+               "Type any word or sentence and the output will show the most 
+              possible suggestion to complete it."
+          ),
+          
+          # Show a plot of the generated distribution
+          mainPanel(
+               textInput(inputId = "text",
+                         label = "Type here"),
+               
+               textOutput(outputId = "predict")
+          )
+     )
+)
 
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
-     
-     output$predict <- renderText(
+server <- function(input, output) {
+
+     output$predict <- renderText({
           if (input$text == "") "Waiting for input..."
           else katz_backoff_model(input$text)
-     )
-})
+     })
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)
